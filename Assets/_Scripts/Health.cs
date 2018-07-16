@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class Health : MonoBehaviour {
 	public Slider healthbar;
-
+	public GameObject fill;
 	public float maxHealth = 10f;
 	float currentHealth;
 	Animator anim;
@@ -25,6 +25,7 @@ public class Health : MonoBehaviour {
 		healthbar.value = currentHealth / maxHealth;
 
 		if (currentHealth <= 0) {
+			fill.SetActive(false);
 			SendMessage("onDeath");
 		} else {
 			Animator anim = this.GetComponent<Animator>();
@@ -39,7 +40,18 @@ public class Health : MonoBehaviour {
 	}
 
 	public void Reset() {
+		fill.SetActive(true);
 		currentHealth = maxHealth;
 		healthbar.value = currentHealth;
+	}
+
+	public void Heal(float amount) {
+		currentHealth += amount;
+
+		if (currentHealth > maxHealth) {
+			maxHealth = currentHealth;
+		}
+
+		healthbar.value = currentHealth / maxHealth;
 	}
 }

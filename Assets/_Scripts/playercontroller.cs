@@ -26,9 +26,6 @@ public class playercontroller : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (Input.GetKeyDown(KeyCode.H)) {
-			health.TakeDamage(0);
-		}
 		switch (state) {
 			case "Movement":
 				Movement();
@@ -38,6 +35,35 @@ public class playercontroller : MonoBehaviour {
 				Jump();
 				Movement();
 				break;
+		}
+
+		Menu();
+	}
+
+	void Menu() {
+		if (Input.GetKeyDown(KeyCode.Tab)) {
+			GameObject ip = Inventory.instance.inventoryPanel;
+
+			if (!ip.activeSelf) {
+				ip.SetActive(true);
+			} else {
+				ip.SetActive(false);
+			}
+		}
+	}
+
+	void DealWeaponDamage() {
+		Vector3 center = transform.position + transform.forward + transform.up;
+		Vector3 halfExtents = new Vector3(0.5f, 1.0f, 0.5f);
+
+		Collider[] hits = Physics.OverlapBox(center, halfExtents, transform.rotation);
+	
+		foreach (Collider hit in hits) {
+			Health otherHealth = hit.GetComponent<Health>();
+
+			if (otherHealth) {
+				otherHealth.TakeDamage(1f);
+			}
 		}
 	}
 
@@ -107,13 +133,15 @@ public class playercontroller : MonoBehaviour {
 	}
 
 	void onDeath() {
-		anim.SetTrigger("Break");
+		if (state != "Break") {
+			ChangeState("Break");
+		}
 	}
 
 	void ReturnToCheckpoint() {
 		//Debug.Log("Check");
 		health.Reset();
-		state = "Movement";
+		ChangeState("Movement");
 		transform.position = checkpoint;
 		
 	}

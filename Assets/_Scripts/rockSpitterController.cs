@@ -62,4 +62,8 @@ public class rockSpitterController : MonoBehaviour {
 		Rigidbody rockBody = r.GetComponent<Rigidbody>();
 		rockBody.AddForce(transform.forward * 500f);
 	}
+
+	void onDeath() {
+		Destroy(gameObject, 2f);
+	}
 }
